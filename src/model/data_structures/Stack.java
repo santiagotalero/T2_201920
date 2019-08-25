@@ -1,8 +1,11 @@
+package model.data_structures
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 
+
 /**
+ *
  *  Implementación tomada de:
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  *  @author Robert Sedgewick
