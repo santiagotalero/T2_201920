@@ -1,4 +1,3 @@
-#Basado en https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore  
 
 .metadata
 bin/
@@ -17,3 +16,6 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+
+data/*
+!data/.gitignore
