@@ -1,6 +1,8 @@
 package model.data_structures;
 
-public interface IStack 
+import java.util.Iterator;
+
+public interface IStack <Item>
 {
 	//Lista de metodos de la clase Stack.java
 
@@ -8,7 +10,7 @@ public interface IStack
 
 	int size();
 
-	void push(Item item);
+	void push (Item item);
 
 	Item pop();
 

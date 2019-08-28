@@ -1,8 +1,12 @@
 package controller;
 
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Scanner;
 
+import model.data_structures.Queue;
 import model.logic.MVCModelo;
+import model.logic.Viaje;
 import view.MVCView;
 
 public class Controller {
@@ -25,79 +29,82 @@ public class Controller {
 		
 	public void run() 
 	{
+		try {
+			modelo.cargarArchivos();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Scanner lector = new Scanner(System.in);
 		boolean fin = false;
 		String dato = "";
 		String respuesta = "";
 
-		while( !fin ){
-			view.printMenu();
+		while( !fin )
+		{
+			//Esperar 3,5 segundos para que el usuario pueda leer
+			try {
+				Thread.sleep(3500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			view.printMenu(modelo.darTamanoCola(), (Viaje[])modelo.primeroUltimo());
 
 			int option = lector.nextInt();
 			switch(option){
-				case 1:
-					System.out.println("--------- \nCrear Arreglo \nDar capacidad inicial del arreglo: ");
-				    int capacidad = lector.nextInt();
-				    modelo = new MVCModelo(capacidad); 
-					System.out.println("Arreglo Dinamico creado");
-					System.out.println("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+			case 1:
+				System.out.println("--------- \nRealizar Consulta \nDar número de hora para empezar a consultar: ");
+				int hora = lector.nextInt();
 
-				case 2:
-					System.out.println("--------- \nDar cadena (simple) a ingresar: ");
-					dato = lector.next();
-					modelo.agregar(dato);
-					System.out.println("Dato agregado");
-					System.out.println("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
 
-				case 3:
-					System.out.println("--------- \nDar cadena (simple) a buscar: ");
-					dato = lector.next();
-					respuesta = modelo.buscar(dato);
-					if ( respuesta != null)
-					{
-						System.out.println("Dato encontrado: "+ respuesta);
-					}
-					else
-					{
-						System.out.println("Dato NO encontrado");
-					}
-					System.out.println("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+				Queue cola= modelo.consulta1(hora);
+				
+				System.out.println("El número total de viajes del cluster más grande a partir de esa hora fue: "+ cola.size());
 
-				case 4:
-					System.out.println("--------- \nDar cadena (simple) a eliminar: ");
-					dato = lector.next();
-					respuesta = modelo.eliminar(dato);
-					if ( respuesta != null)
-					{
-						System.out.println("Dato eliminado "+ respuesta);
-					}
-					else
-					{
-						System.out.println("Dato NO eliminado");							
-					}
-					System.out.println("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+				Iterator iter= cola.iterator();
 
-				case 5: 
-					System.out.println("--------- \nContenido del Arreglo: ");
-					view.printModelo(modelo);
-					System.out.println("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;	
-					
-				case 6: 
-					System.out.println("--------- \n Hasta pronto !! \n---------"); 
-					lector.close();
-					fin = true;
-					break;	
+				while(iter.hasNext())
+				{
+					Viaje actual= (Viaje)iter.next();
+					System.out.println("Hora: "+ actual.getHour()+" , Zona origen: "+ actual.getSourceID()+ " , Zona destino: "+ actual.getDstID() + " , Tiempo promedio: "+ actual.getMeanTravelTime());
+				}
 
-				default: 
-					System.out.println("--------- \n Opcion Invalida !! \n---------");
-					break;
+				break;
+
+
+			case 2: 
+				System.out.println("--------- \n Realizar consulta \n---------"); 
+				System.out.println("Ingrese una hora específica");
+				int hora2= lector.nextInt();
+				
+				System.out.println("Ingrese la cantidad de últimos viajes");
+				int n= lector.nextInt();
+
+				Queue colaViajes= modelo.consulta2(n, hora2);
+				
+				Iterator iter2=colaViajes.iterator();
+				
+				while(iter2.hasNext())
+				{
+					Viaje actual= (Viaje)iter2.next();
+					System.out.println("Hora: "+ actual.getHour()+" , Zona origen: "+ actual.getSourceID()+ " , Zona destino: "+ actual.getDstID() + " , Tiempo promedio: "+ actual.getMeanTravelTime());
+				}
+
+				break;	
+
+			case 3:
+				System.out.println("--------- \nHasta pronto! \n ");
+				lector.close();
+				fin = true;
+				break;
+
+			default: 
+				System.out.println("--------- \n Opcion Invalida !! \n---------");
+				break;
 			}
 		}
-		
+
 	}	
 }

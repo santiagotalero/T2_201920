@@ -1,6 +1,8 @@
 package model.data_structures;
 
-public interface IQueue 
+import java.util.Iterator;
+
+public interface IQueue <Item>
 {
 	//Metodos de la clase Queue.java
 

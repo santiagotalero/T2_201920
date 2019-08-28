@@ -1,4 +1,4 @@
-package model.data_structures
+package model.data_structures;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Stack<Item> implements Iterable<Item> {
+public class Stack<Item> implements  IStack,Iterable<Item> {
     private Node<Item> primero;     // parte superior del stack 
     private int n;                // tamaño del stack
 
@@ -55,11 +55,12 @@ public class Stack<Item> implements Iterable<Item> {
      *
      * @param  item el item para agregar
      */
-    public void push(Item item) {
+    public void push(Object item) {
+    
         Node<Item> oldprimero = primero;
         primero = new Node<Item>();
-        primero.item = item;
-        primero.next = oldprimero;
+        primero.item = (Item)item;
+        primero.siguiente = oldprimero;
         n++;
     }
 
@@ -72,7 +73,7 @@ public class Stack<Item> implements Iterable<Item> {
     public Item pop() {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = primero.item;        // save item to return
-        primero = primero.next;            // delete primero node
+        primero = primero.siguiente;            // delete primero node
         n--;
         return item;                   // return the saved item
     }
@@ -132,26 +133,10 @@ public class Stack<Item> implements Iterable<Item> {
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException();
             Item item = current.item;
-            current = current.next; 
+            current = current.siguiente; 
             return item;
         }
     }
 
 
-    /**
-     * Unit tests the {@code Stack} data type.
-     *
-     * @param args the command-line arguments
-     */
-    public static void main(String[] args) {
-        Stack<String> stack = new Stack<String>();
-        while (!StdIn.isEmpty()) {
-            String item = StdIn.readString();
-            if (!item.equals("-"))
-                stack.push(item);
-            else if (!stack.isEmpty())
-                StdOut.print(stack.pop() + " ");
-        }
-        StdOut.println("(" + stack.size() + " left on stack)");
-    }
 }

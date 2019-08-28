@@ -1,4 +1,4 @@
-package model.data_structures
+package model.data_structures;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
  *  @author Kevin Wayne
  */
 
-public class Queue<Item> implements Iterable<Item> {
+public class Queue<Item> implements IQueue,Iterable<Item> {
     private Node<Item> primero;    // comienzo del queue
     private Node<Item> ultimo;     // fin del queue
     private int n;               // numero de elementos en el queue
@@ -66,10 +66,10 @@ public class Queue<Item> implements Iterable<Item> {
      *
      * @param  item the item to add
      */
-    public void enqueue(Item item) {
+    public void enqueue(Object item) {
         Node<Item> oldultimo = ultimo;
         ultimo = new Node<Item>();
-        ultimo.item = item;
+        ultimo.item = (Item)item;
         ultimo.next = null;
         if (isEmpty()) primero = ultimo;
         else           oldultimo.next = ultimo;
@@ -134,20 +134,5 @@ public class Queue<Item> implements Iterable<Item> {
     }
 
 
-    /**
-     * Unit tests the {@code Queue} data type.
-     *
-     * @param args the command-line arguments
-     */
-    public static void main(String[] args) {
-        Queue<String> queue = new Queue<String>();
-        while (!StdIn.isEmpty()) {
-            String item = StdIn.readString();
-            if (!item.equals("-"))
-                queue.enqueue(item);
-            else if (!queue.isEmpty())
-                StdOut.print(queue.dequeue() + " ");
-        }
-        StdOut.println("(" + queue.size() + " left on queue)");
-    }
+
 }
