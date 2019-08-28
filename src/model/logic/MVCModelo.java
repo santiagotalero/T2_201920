@@ -90,15 +90,12 @@ public class MVCModelo {
 			
 			reader.readNext();
 
-			int i=0;
 			
-			while(i<100)
+			for(String[] nextLine : reader)
 			{
-				String[]nextLine=reader.readNext();
 				Viaje actual= new Viaje(Integer.parseInt(nextLine[0]),Integer.parseInt(nextLine[1]),Integer.parseInt(nextLine[2]),Double.parseDouble(nextLine[3]),Double.parseDouble(nextLine[4]),Double.parseDouble(nextLine[5]),Double.parseDouble(nextLine[6]));
 				pila.push(actual);
 				cola.enqueue(actual);
-				i++;
 			}
 
 		} 
@@ -132,59 +129,67 @@ public class MVCModelo {
 		return viajes;
 	}
 	
+
 	public Queue consulta1(int hora)
 	{
-		Queue clon= cola;
-
-		Queue colaFinal= new Queue();
-
-		Queue colaCompare= new Queue();
-
-		Iterator iter= clon.iterator();
-
-		int cantidadMax=0;
-
-		boolean start=false;
-
-
+		Queue colaModelo= colaAPartirDe(hora);
+		
+		Queue clusterFinal= new Queue();
+		Queue clusterAuxiliar= new Queue();
+		
+		int horaMax=0;
+		
+		Iterator iter= colaModelo.iterator();
+		
 		while(iter.hasNext())
 		{
-
-			int horaActual=0;
-
-			Viaje actual=(Viaje) iter.next();
-
-			if(start)
+			Viaje actual= (Viaje)iter.next();
+			
+			if(actual.getHour()>=horaMax)
 			{
-
-				if(actual.getHour()>=horaActual)
-				{
-					colaCompare.enqueue(actual);
-					horaActual=actual.getHour();	
-				}
-				else
-				{
-					if(colaCompare.size()>= cantidadMax)
-					{
-						colaFinal=colaCompare;
-						cantidadMax= colaCompare.size();
-						colaCompare= new Queue();
-						horaActual=0;
-					}
-
-				}
-
+				horaMax=actual.getHour();
+				clusterAuxiliar.enqueue(actual);
 			}
-
+			else
+			{
+				if(clusterAuxiliar.size()>clusterFinal.size())
+				{
+					clusterFinal=clusterAuxiliar;
+				}
+				clusterAuxiliar= new Queue();
+				clusterAuxiliar.enqueue(actual);
+				horaMax=actual.getHour();
+			}
+		}
+		
+		return clusterFinal;
+	}
+	
+	public Queue colaAPartirDe(int hora)
+	{
+		Queue colaNueva= new Queue();
+		
+		Iterator iter= cola.iterator();
+		
+		boolean empezar=false;
+		
+		while(iter.hasNext())
+		{
+			Viaje actual= (Viaje)iter.next();
+			
+			
+			if(empezar)
+			{
+				colaNueva.enqueue(actual);
+			}
 			else if(actual.getHour()==hora)
 			{
-				start=true;
-				colaCompare.enqueue(actual);
-				horaActual=actual.getHour();
+				empezar=true;
+				colaNueva.enqueue(actual);
 			}
-
 		}
-		return colaFinal;
+		
+		return colaNueva;
 	}
 
 	
